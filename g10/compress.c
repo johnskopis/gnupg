@@ -56,6 +56,9 @@
 int compress_filter_bz2( void *opaque, int control,
 			 IOBUF a, byte *buf, size_t *ret_len);
 
+int compress_filter_zstd( void *opaque, int control,
+                          IOBUF a, byte *buf, size_t *ret_len);
+
 #ifdef HAVE_ZIP
 static void
 init_compress( compress_filter_context_t *zfx, z_stream *zs )
@@ -351,6 +354,12 @@ push_compress_filter2(IOBUF out,compress_filter_context_t *zfx,
     case COMPRESS_ALGO_ZLIB:
       iobuf_push_filter2(out,compress_filter,zfx,rel);
       break;
+#endif
+
+#ifdef HAVE_ZSTD
+    case COMPRESS_ALGO_ZSTD:
+        iobuf_push_filter2(out,compress_filter_zstd,zfx,rel);
+        break;
 #endif
 
 #ifdef HAVE_BZIP2

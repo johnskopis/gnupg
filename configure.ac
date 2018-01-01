@@ -104,6 +104,7 @@ have_system_resolver=no
 gnupg_have_ldap="n/a"
 
 use_zip=yes
+use_zstd=yes
 use_bzip2=yes
 use_exec=yes
 use_trust_models=yes
@@ -327,6 +328,14 @@ AC_ARG_ENABLE(zip,
                   [disable the ZIP and ZLIB compression algorithm]),
    use_zip=$enableval)
 AC_MSG_RESULT($use_zip)
+
+# Allow disabling of bzib2 support.
+# It is defined only after we confirm the library is available later
+AC_MSG_CHECKING([whether to enable the ZSTD compression algorithm])
+AC_ARG_ENABLE(zstd,
+   AC_HELP_STRING([--disable-zstd],[disable the ZSTD compression algorithm]),
+   use_zstd=$enableval)
+AC_MSG_RESULT($use_zstd)
 
 # Allow disabling of bzib2 support.
 # It is defined only after we confirm the library is available later
@@ -1518,6 +1527,34 @@ if test "$use_zip" = yes ; then
        CPPFLAGS=${_cppflags} LDFLAGS=${_ldflags}),
        CPPFLAGS=${_cppflags} LDFLAGS=${_ldflags})
 fi
+
+#
+# Do we have zlib? Must do it here because Solaris failed
+# when compiling a conftest (due to the "-lz" from LIBS).
+# Note that we combine zlib and bzlib2 in ZLIBS.
+#
+if test "$use_zstd" = yes ; then
+  _cppflags="${CPPFLAGS}"
+  _ldflags="${LDFLAGS}"
+  AC_ARG_WITH(zstd,
+    [  --with-zstd=DIR         use zstd in DIR],[
+      if test -d "$withval"; then
+        CPPFLAGS="${CPPFLAGS} -I$withval/include"
+        LDFLAGS="${LDFLAGS} -L$withval/lib"
+      fi
+    ])
+
+  AC_CHECK_HEADER(zstd.h,
+     AC_CHECK_LIB(zstd, ZSTD_versionNumber,
+       [
+       have_zstd=yes
+       ZLIBS="$ZLIBS -lzstd"
+       AC_DEFINE(HAVE_ZSTD,1, [Defined if ZSTD and ZLIB are supported])
+       ],
+       CPPFLAGS=${_cppflags} LDFLAGS=${_ldflags}),
+       CPPFLAGS=${_cppflags} LDFLAGS=${_ldflags})
+fi
+AM_CONDITIONAL(ENABLE_ZSTD_SUPPORT,test x"$have_zstd" = "xyes")
 
 
 #

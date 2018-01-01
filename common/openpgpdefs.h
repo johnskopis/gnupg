@@ -192,6 +192,7 @@ typedef enum
     COMPRESS_ALGO_ZIP       =  1,
     COMPRESS_ALGO_ZLIB      =  2,
     COMPRESS_ALGO_BZIP2     =  3,
+    COMPRESS_ALGO_ZSTD      =  4,
     COMPRESS_ALGO_PRIVATE10 = 110
   }
 compress_algo_t;

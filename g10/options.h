@@ -103,7 +103,9 @@ struct
   int cert_digest_algo;
   int compress_algo;
   int compress_level;
+  int zstd_compress_level;
   int bz2_compress_level;
+  int zstd_decompress_lowmem;
   int bz2_decompress_lowmem;
   strlist_t def_secret_key;
   char *def_recipient;

@@ -58,6 +58,12 @@ TESTS = $(module_tests)
 TESTS_ENVIRONMENT = \
 	abs_top_srcdir=$(abs_top_srcdir)
 
+if ENABLE_ZSTD_SUPPORT
+zstd_source = compress-zstd.c
+else
+zstd_source =
+endif
+
 if ENABLE_BZIP2_SUPPORT
 bzip2_source = compress-bz2.c
 else
@@ -96,6 +102,7 @@ common_source =  \
 	      build-packet.c	\
 	      compress.c	\
 	      $(bzip2_source)	\
+	      $(zstd_source)	\
 	      filter.h		\
 	      free-packet.c	\
 	      getkey.c		\

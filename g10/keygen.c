@@ -437,6 +437,12 @@ keygen_set_std_prefs (const char *string,int personal)
                 any_compress = 1;
               }
 
+	    if(!check_compress_algo(COMPRESS_ALGO_ZSTD))
+              {
+                strcat(dummy_string,"Z4 ");
+                any_compress = 1;
+              }
+
 	    if(!check_compress_algo(COMPRESS_ALGO_BZIP2))
               {
                 strcat(dummy_string,"Z3 ");

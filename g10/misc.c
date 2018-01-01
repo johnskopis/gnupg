@@ -1271,6 +1271,12 @@ compress_algo_to_string(int algo)
       s="ZLIB";
       break;
 
+#ifdef HAVE_ZSTD
+    case COMPRESS_ALGO_ZSTD:
+      s="ZSTD";
+      break;
+#endif
+
 #ifdef HAVE_BZIP2
     case COMPRESS_ALGO_BZIP2:
       s="BZIP2";
@@ -1295,6 +1301,10 @@ string_to_compress_algo(const char *string)
     return 1;
   else if(ascii_strcasecmp(string,"zlib")==0)
     return 2;
+#ifdef HAVE_ZSTD
+  else if(ascii_strcasecmp(string,"zstd")==0)
+    return 4;
+#endif
 #ifdef HAVE_BZIP2
   else if(ascii_strcasecmp(string,"bzip2")==0)
     return 3;
@@ -1322,6 +1332,9 @@ check_compress_algo(int algo)
 #ifdef HAVE_ZIP
     case 1:
     case 2: return 0;
+#endif
+#ifdef HAVE_ZSTD
+    case 4: return 0;
 #endif
 #ifdef HAVE_BZIP2
     case 3: return 0;

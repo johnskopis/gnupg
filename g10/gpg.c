@@ -252,6 +252,7 @@ enum cmd_and_opt_values
     oCertDigestAlgo,
     oCompressAlgo,
     oCompressLevel,
+    oZSTDCompressLevel,
     oBZ2CompressLevel,
     oBZ2DecompressLowmem,
     oPassphrase,
@@ -574,6 +575,7 @@ static ARGPARSE_OPTS opts[] = {
   ARGPARSE_s_i (oCompress, NULL,
                 N_("|N|set compress level to N (0 disables)")),
   ARGPARSE_s_i (oCompressLevel, "compress-level", "@"),
+  ARGPARSE_s_i (oZSTDCompressLevel, "zstd-compress-level", "@"),
   ARGPARSE_s_i (oBZ2CompressLevel, "bzip2-compress-level", "@"),
   ARGPARSE_s_n (oBZ2DecompressLowmem, "bzip2-decompress-lowmem", "@"),
 
@@ -2398,6 +2400,7 @@ main (int argc, char **argv)
 
     opt.command_fd = -1; /* no command fd */
     opt.compress_level = -1; /* defaults to standard compress level */
+    opt.zstd_compress_level = -1; /* defaults to standard compress level */
     opt.bz2_compress_level = -1; /* defaults to standard compress level */
     /* note: if you change these lines, look at oOpenPGP */
     opt.def_cipher_algo = 0;
@@ -3139,6 +3142,7 @@ main (int argc, char **argv)
 	    opt.compress_level = opt.bz2_compress_level = pargs.r.ret_int;
 	    break;
 	  case oCompressLevel: opt.compress_level = pargs.r.ret_int; break;
+	  case oZSTDCompressLevel: opt.zstd_compress_level = pargs.r.ret_int; break;
 	  case oBZ2CompressLevel: opt.bz2_compress_level = pargs.r.ret_int; break;
 	  case oBZ2DecompressLowmem: opt.bz2_decompress_lowmem=1; break;
 	  case oPassphrase:
